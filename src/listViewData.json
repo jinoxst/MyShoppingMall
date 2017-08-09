@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "title": "Chapter1-StackNavigator",
+      "routerName": "App01",
+    },
+    {
+      "title": "Chapter2-TabNavigator",
+      "routerName": "App02",
+    },
+    {
+      "title": "Chapter3-TabNavigator2",
+      "routerName": "App03",
+    },
+    {
+      "title": "Chapter4-1-StackNavigator",
+      "routerName": "App04_1",
+    },
+    {
+      "title": "Chapter4-2-StackNavigator2 modal",
+      "routerName": "App04_4",
+    },
+    {
+      "title": "Chapter5-DrawerNavigator",
+      "routerName": "App05",
+    },
+    {
+      "title": "Chapter6-Redux Navigation",
+      "routerName": "App06",
+    },
+  ]
+}
