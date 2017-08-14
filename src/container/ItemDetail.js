@@ -76,9 +76,19 @@ const styles = StyleSheet.create({
 });
 
 export default class ItemDeatil extends React.Component {
+  constructor(props) {
+    super(props);
+    this._goBack = this._goBack.bind(this);
+  }
+
   static navigationOptions = {
     title: null,
   };
+
+  _goBack() {
+    this.setState({gobackRefreshing: true});
+    return this.props.navigation.goBack(null);
+  }
   render() {
     const { params } = this.props.navigation.state;
     return (
@@ -91,7 +101,7 @@ export default class ItemDeatil extends React.Component {
             <Text style={styles.user}>{params.user.nickname}</Text>
           </View>
           <Text style={styles.price}>¥{Util.numberWithCommas(params.item.price)}</Text>
-          <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.goBack(null)}>
+          <TouchableOpacity style={styles.button} onPress={this._goBack}>
             <Text style={styles.text}>購入する</Text>
           </TouchableOpacity>
         </View>
