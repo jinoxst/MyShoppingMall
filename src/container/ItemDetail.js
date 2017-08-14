@@ -16,15 +16,15 @@ let {height, width} = Dimensions.get('window');
 let photoSize = (height > width) ? width : height;
 
 const styles = StyleSheet.create({
-  contentContainer: {
+  scrollviewContainer: {
     flex: 1,
     padding: 0,
     flexDirection: 'column',
     alignItems: 'center',
   },
-  container: {
+  viewContainer: {
     flex: 1,
-    padding: 7,
+    padding: 0,
     flexDirection: 'column',
     alignItems: 'center',
   },
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 5,
+    marginBottom: 5,
     borderColor: '#8E8E8E',
     borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: 20,
@@ -81,17 +82,19 @@ export default class ItemDeatil extends React.Component {
   render() {
     const { params } = this.props.navigation.state;
     return (
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Image source={{uri:Config.IMAGE_URL + params.item.image}} style={styles.photo} />
-        <Text style={styles.desc}>{params.item.desc}</Text>
-        <View style={styles.time_user}>
-          <TimeAgo language='jp' time={params.item.createtime} style={styles.timeago} />
-          <Text style={styles.user}>{params.user.nickname}</Text>
+      <ScrollView scrollviewContainerStyle={styles.scrollviewContainer}>
+        <View style={styles.viewContainer}>
+          <Image source={{uri:Config.IMAGE_URL + params.item.image}} style={styles.photo} />
+          <Text style={styles.desc}>{params.item.desc}</Text>
+          <View style={styles.time_user}>
+            <TimeAgo language='jp' time={params.item.createtime} style={styles.timeago} />
+            <Text style={styles.user}>{params.user.nickname}</Text>
+          </View>
+          <Text style={styles.price}>¥{Util.numberWithCommas(params.item.price)}</Text>
+          <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.goBack(null)}>
+            <Text style={styles.text}>購入する</Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.price}>¥{Util.numberWithCommas(params.item.price)}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.goBack(null)}>
-          <Text style={styles.text}>購入する</Text>
-        </TouchableOpacity>
       </ScrollView>
     );
   }
