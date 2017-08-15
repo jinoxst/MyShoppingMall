@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import Config, {Constant} from './Config';
 import TimeAgo from './TimeAgo';
@@ -85,7 +86,7 @@ export default class ItemDeatil extends React.Component {
     title: null,
   };
 
-  _soldOut(item_id) {
+  _soldOutCore(item_id) {
     var datas = {
       item_id: item_id
     };
@@ -116,6 +117,18 @@ export default class ItemDeatil extends React.Component {
       console.log(error);
     })
     .done();
+  }
+
+  _soldOut(item_id) {
+    Alert.alert(
+      'このアイテムを購入しますか',
+      null,
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => this._soldOutCore(item_id)},
+      ],
+      { cancelable: false }
+    )
   }
   render() {
     const { params } = this.props.navigation.state;
