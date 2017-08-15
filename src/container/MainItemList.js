@@ -23,6 +23,10 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#8E8E8E',
   },
+  activityIndicator: {
+    transform: [{scale: Config.ACTIVITYINDICATOR_SCALE}],
+    height: 40
+  }
 });
 
 export default class MainItemList extends React.Component {
@@ -34,7 +38,6 @@ export default class MainItemList extends React.Component {
     this.state = {
       isLoading: true,
       refreshing: false,
-      gobackRefreshing: false
     }
     this._renderRow = this._renderRow.bind(this);
   }
@@ -46,22 +49,28 @@ export default class MainItemList extends React.Component {
 
   _fetch() {
     fetch(Config.LIST_URL)
-      .then((response) => response.json())
-      .then((responseData) => {
-        let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.setState({
-          refreshing: false,
-          isLoading: false,
-          dataSource: ds.cloneWithRows(responseData.list),
-        }, function() {
-          // do something with new state
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .done();
+    .then((response) => response.json())
+    .then((responseData) => {
+      let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      this.setState({
+        refreshing: false,
+        isLoading: false,
+        dataSource: ds.cloneWithRows(responseData.list),
+      }, function() {
+        // do something with new state
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+    .done();
   }
+
+  _gotoBackReload = () => {
+    this.setState({}, function(){
+      this._fetch();
+    });
+  };
 
   componentDidMount() {
     return this._fetch();
@@ -71,7 +80,7 @@ export default class MainItemList extends React.Component {
     if (this.state.isLoading) {
       return (
         <View style={styles.container}>
-          <ActivityIndicator style={{transform: [{scale: Config.ACTIVITYINDICATOR_SCALE}]}} color={Config.REFRESH_COLOR} />
+          <ActivityIndicator style={styles.activityIndicator} color={Config.REFRESH_COLOR} />
         </View>
       );
     }
@@ -105,6 +114,6 @@ export default class MainItemList extends React.Component {
   }
 
   _onPressRow(rowData) {
-    this.props.navigation.navigate('ItemDetail', rowData);
+    this.props.navigation.navigate('ItemDetail', { _gotoBackReload: this._gotoBackReload , rowData});
   }
 }
