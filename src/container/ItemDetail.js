@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native';
-import Config from './Config';
+import Config, {Constant} from './Config';
 import TimeAgo from './TimeAgo';
 import * as Util from './Util';
 
@@ -78,30 +78,58 @@ const styles = StyleSheet.create({
 export default class ItemDeatil extends React.Component {
   constructor(props) {
     super(props);
-    this._goBack = this._goBack.bind(this);
+    this._soldOut = this._soldOut.bind(this);
   }
 
   static navigationOptions = {
     title: null,
   };
 
-  _goBack() {
-    this.setState({gobackRefreshing: true});
-    return this.props.navigation.goBack(null);
+  _soldOut(item_id) {
+    var datas = {
+      item_id: item_id
+    };
+    var formBody = [];
+    for (var property in datas) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(datas[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(Config.SOLDOUT_URL, {
+      method: 'POST',
+      headers: Constant.json.headers,
+      body: formBody
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData);
+      if(responseData.status == '00'){
+        const { navigation } = this.props;
+        navigation.goBack(null);
+        navigation.state.params._gotoBackReload();
+      }else{
+        alert(responseData.message);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .done();
   }
   render() {
     const { params } = this.props.navigation.state;
     return (
       <ScrollView scrollviewContainerStyle={styles.scrollviewContainer}>
         <View style={styles.viewContainer}>
-          <Image source={{uri:Config.IMAGE_URL + params.item.image}} style={styles.photo} />
-          <Text style={styles.desc}>{params.item.desc}</Text>
+          <Image source={{uri:Config.IMAGE_URL + params.rowData.item.image}} style={styles.photo} />
+          <Text style={styles.desc}>{params.rowData.item.desc}</Text>
           <View style={styles.time_user}>
-            <TimeAgo language='jp' time={params.item.createtime} style={styles.timeago} />
-            <Text style={styles.user}>{params.user.nickname}</Text>
+            <TimeAgo language='jp' time={params.rowData.item.createtime} style={styles.timeago} />
+            <Text style={styles.user}>{params.rowData.user.nickname}</Text>
           </View>
-          <Text style={styles.price}>¥{Util.numberWithCommas(params.item.price)}</Text>
-          <TouchableOpacity style={styles.button} onPress={this._goBack}>
+          <Text style={styles.price}>¥{Util.numberWithCommas(params.rowData.item.price)}</Text>
+          <TouchableOpacity style={styles.button} onPress={() => this._soldOut(params.rowData.item.id)}>
             <Text style={styles.text}>購入する</Text>
           </TouchableOpacity>
         </View>
