@@ -1,7 +1,7 @@
 export const Constant = {
   IMG_PROTOCOL: 'http',
   API_PROTOCOL: 'https',
-  API_URL: 'test.vr-ipx.com',
+  API_URL: 'vr-ipx.com',
   API_PORT: 50052,
   json: {
     headers: {
